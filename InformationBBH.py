@@ -49,11 +49,9 @@ def GetLocalisationsAndBiotype(element1, element2, Dico):
 			localisations = Dico[element1][element2]["Localisations"]
 			biotypes = Dico[element1][element2]["Biotype"]
 		else : # if a gene/transcript don't have any G4s
-			#~ print str(element2)
 			localisations = []
 			biotypes = []
 	else :
-		#~ print "Patate 5"
 		localisations = []
 		biotypes = []
 	return(localisations, biotypes)
@@ -270,22 +268,26 @@ def GetCommonInfoOfParalogues(paraloguesG4Sp1, paraloguesG4Sp2):
 			# so we add those information to the common lists
 			commonloc.append(loc)
 			if len(paraloguesG4Sp2["Localisations"][loc]) > 1 :
-				for i in len(paraloguesG4Sp2["Localisations"][loc]) :
+				for i in range(len(paraloguesG4Sp2["Localisations"][loc])) :
+					print paraloguesG4Sp2["Localisations"][loc][i]
 					commonParalogues.append(paraloguesG4Sp2["Localisations"][loc][i])
 			if len(paraloguesG4Sp1["Localisations"][loc]) > 1 :
-				for i in len(paraloguesG4Sp1["Localisations"][loc]) :
+				for i in range(len(paraloguesG4Sp1["Localisations"][loc])) :
 					commonParalogues.append(paraloguesG4Sp1["Localisations"][loc][i])
+					print paraloguesG4Sp1["Localisations"][loc][i]
 	for Bt in paraloguesG4Sp1["Biotype"] :
 		if Bt in paraloguesG4Sp2["Biotype"] :
 			# the biotype is present in both species's paralogues
 			# so we add those information to the common lists
 			commonBt.append(Bt)
 			if len(paraloguesG4Sp2["Biotype"][Bt]) > 1 :
-				for i in len(paraloguesG4Sp2["Biotype"][Bt]) :
+				for i in range(len(paraloguesG4Sp2["Biotype"][Bt])) :
 					commonParalogues.append(paraloguesG4Sp2["Biotype"][Bt][i])
+					print paraloguesG4Sp2["Biotype"][Bt][i]
 			if len(paraloguesG4Sp1["Biotype"][Bt]) > 1 :
-				for i in len(paraloguesG4Sp1["Biotype"][Bt]) :
+				for i in range(len(paraloguesG4Sp1["Biotype"][Bt])) :
 					commonParalogues.append(paraloguesG4Sp1["Biotype"][Bt][i])
+					print paraloguesG4Sp1["Biotype"][Bt][i]
 	return(commonParalogues, commonloc, commonBt)
 #----------------------------------------------------------------------#
 def GetInfoParalogy(levelSp1, levelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevelHom, DicoHomologyLevel, specie1, specie2):
@@ -325,12 +327,14 @@ def GetInfoParalogy(levelSp1, levelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, Di
 	
 	if tuple(commonParalogues) not in DicoInfoBBHLevelHom :
 		DicoInfoBBHLevelHom[tuple(commonParalogues)] = {"Common localisations" : [], "Common biotypes" : []}
-		DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common localisations"].append(commonloc)
-		DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common biotypes"].append(commonBt)
+		for i in range(len(commonloc)):
+			DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common localisations"].append(commonloc[i])
+		for i in range(len(commonBt)):
+			DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common biotypes"].append(commonBt[i])
 	elif tuple(commonParalogues) in DicoInfoBBHLevelHom :
 		if set(commonloc) ^ set(DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common localisations"]) :
 			DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common localisations"].append(list(set(commonloc) ^ set(DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common localisations"])))
-		if set(commonBt) ^ set(DicoHomologyLevelHom[tuple(commonParalogues)]["Common biotypes"]) :
+		if set(commonBt) ^ set(DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common biotypes"]) :
 			DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common biotypes"].append(list(set(commonBt) ^ set(DicoInfoBBHLevelHom[tuple(commonParalogues)]["Common biotypes"])))
 	return(DicoInfoBBHLevelHom)
 #----------------------------------------------------------------------#
@@ -359,10 +363,10 @@ def ParalogyNoHomology(levelSp1, levelsSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level
 				DicoTmp = GetInfoParalogy(levelSp1, levelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevelHom, DicoHomologyLevel, specie1, specie2)
 			else :
 				DicoTmp = {"No Paralogy" : {"Common Localisations" : [], "Common Biotypes" : []}} 
-				print "Sp2 : " + str(idG4Sp2) + "\t" + str(levelSp2)
+				#~ print "Sp2 : " + str(idG4Sp2) + "\t" + str(levelSp2)
 	else :
 		DicoTmp = {"No Paralogy" : {"Common Localisations" : [], "Common Biotypes" : []}} 
-		print "Sp1 : " + str(idG4Sp1) + "\t" + str(levelSp1)
+		#~ print "Sp1 : " + str(idG4Sp1) + "\t" + str(levelSp1)
 	return(DicoTmp)
 #----------------------------------------------------------------------#
 def GetInfoHomology(HlevelSp1, levelSp1, levelsSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevel, DicoHomologyLevel, specie1, specie2):

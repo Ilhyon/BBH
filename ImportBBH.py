@@ -39,6 +39,8 @@ def ProteinToTranscript(elem, DicoGTP):
 	if re.search("SP", elem): # the element 1 is a protein
 		if elem in DicoGTP["Protein"] :
 			transcriptID = DicoGTP["Protein"][elem][0]
+			if type(transcriptID) is list :
+				print transcriptID
 		else:
 			transcriptID = "No Transcript ID"
 			#~ print elem
