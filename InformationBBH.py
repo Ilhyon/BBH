@@ -3,7 +3,7 @@
 
 import argparse
 import re
-import ImportBBH_02 as imp
+import ImportBBH as imp
 from pprint import pprint
 
 #----------------------------------------------------------------------#
@@ -281,11 +281,11 @@ def GetCommonInfoOfParalogues(paraloguesG4Sp1, paraloguesG4Sp2):
 			# so we add those information to the common lists
 			commonBt.append(Bt)
 			if len(paraloguesG4Sp2["Biotype"][Bt]) > 1 :
-				for i in len(paraloguesG4Sp2["Biotype"][loc]) :
-					commonParalogues.append(paraloguesG4Sp2["Biotype"][loc][i])
-			if len(paraloguesG4Sp1["Biotype"][loc]) > 1 :
-				for i in len(paraloguesG4Sp1["Biotype"][loc]) :
-					commonParalogues.append(paraloguesG4Sp1["Biotype"][loc][i])
+				for i in len(paraloguesG4Sp2["Biotype"][Bt]) :
+					commonParalogues.append(paraloguesG4Sp2["Biotype"][Bt][i])
+			if len(paraloguesG4Sp1["Biotype"][Bt]) > 1 :
+				for i in len(paraloguesG4Sp1["Biotype"][Bt]) :
+					commonParalogues.append(paraloguesG4Sp1["Biotype"][Bt][i])
 	return(commonParalogues, commonloc, commonBt)
 #----------------------------------------------------------------------#
 def GetInfoParalogy(levelSp1, levelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevelHom, DicoHomologyLevel, specie1, specie2):
