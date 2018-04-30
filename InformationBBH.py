@@ -568,14 +568,14 @@ def WriteFile(DicoInfoBBH, path, level, homologyType):
 			for coupleHomology in DicoInfoBBH[level][BBH][homologyType] :
 				if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"] :
 					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
-						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"]))
+						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
 					else :
-						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t")
+						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t\n")
 				else :
 					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
-						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"]))
+						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
 					else :
-						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t")
+						output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t\n")
 	output.close()
 #----------------------------------------------------------------------#
 def importData(path, specie1, specie2):
