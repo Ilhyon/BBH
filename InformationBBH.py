@@ -562,7 +562,7 @@ def GetDicoInfo(DicoBBH, DicoHomology, DicoInfoG4Sp1, DicoInfoG4Sp2, DicoInfoBBH
 #----------------------------------------------------------------------#
 def WriteFile(DicoInfoBBH, path, level, homologyType):
 	output = open(path+str(homologyType)+'_'+level+'_BBHrG4.txt',"w") # file opening for reading
-	output.write("BBH\tcouple Homologue\tLocalisations\tBiotypes")
+	output.write("BBH\tcouple Homologue\tLocalisations\tBiotypes\n")
 	for BBH in DicoInfoBBH[level] :
 		if homologyType in DicoInfoBBH[level][BBH] :
 			for coupleHomology in DicoInfoBBH[level][BBH][homologyType] :
@@ -625,13 +625,13 @@ def importData(path, specie1, specie2):
 
 	
 	#~ pprint(DicoGeneTranscriptProteinSpecie2)
-	#~ pprint(DicoHomology)
-	#~ pprint(DicoInfoG4Specie2)
+	pprint(DicoHomology)
+	#~ pprint(DicoInfoG4Specie2["Gene"])
 	return(DicoBBH, DicoHomology, DicoInfoG4Specie1, DicoInfoG4Specie2)
 #----------------------------------------------------------------------#
 def build_arg_parser():
 	parser = argparse.ArgumentParser(description = 'InfoBBH')
-	parser.add_argument ('-p', '--path', default = '/home/anais/Documents/Data/Blast/')
+	parser.add_argument ('-p', '--path', default = '/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/')
 	parser.add_argument ('-sp1', '--specie1', default = 'HS')
 	parser.add_argument ('-sp2', '--specie2', default = 'MM')
 	return parser
@@ -651,16 +651,16 @@ def main():
 	DicoInfoBBH["Gene"] = GetDicoInfo(DicoBBH, DicoHomology, DicoInfoG4Sp1, DicoInfoG4Sp2, DicoInfoBBH, "Gene", specie1, specie2)
 	DicoInfoBBH["Transcript"] = GetDicoInfo(DicoBBH, DicoHomology, DicoInfoG4Sp1, DicoInfoG4Sp2, DicoInfoBBH, "Transcript", specie1, specie2)
 	
-	WriteFile(DicoInfoBBH, path, "Gene", "Orthology")
-	WriteFile(DicoInfoBBH, path, "Gene", "Homology")
-	WriteFile(DicoInfoBBH, path, "Gene", "No_orthology")
-	WriteFile(DicoInfoBBH, path, "Gene", "Paralogy")
-	print "File for the gene level done"
-	WriteFile(DicoInfoBBH, path, "Transcript", "No_orthology")
-	WriteFile(DicoInfoBBH, path, "Transcript", "Orthology")
-	WriteFile(DicoInfoBBH, path, "Transcript", "Homology")
-	WriteFile(DicoInfoBBH, path, "Transcript", "Paralogy")
-	print "File for the transcript level done"
+	#~ WriteFile(DicoInfoBBH, path, "Gene", "Orthology")
+	#~ WriteFile(DicoInfoBBH, path, "Gene", "Homology")
+	#~ WriteFile(DicoInfoBBH, path, "Gene", "No_orthology")
+	#~ WriteFile(DicoInfoBBH, path, "Gene", "Paralogy")
+	#~ print "File for the gene level done"
+	#~ WriteFile(DicoInfoBBH, path, "Transcript", "No_orthology")
+	#~ WriteFile(DicoInfoBBH, path, "Transcript", "Orthology")
+	#~ WriteFile(DicoInfoBBH, path, "Transcript", "Homology")
+	#~ WriteFile(DicoInfoBBH, path, "Transcript", "Paralogy")
+	#~ print "File for the transcript level done"
 #----------------------------------------------------------------------#	
 
 main()
