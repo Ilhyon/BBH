@@ -299,12 +299,14 @@ def importInfoG4Gene(DicoGTP, DicoInfoG4):
 	"""
 	# with the new informations and the dicoGTP we can get the missing ones :
 	# for genes level the localisation and biotypes
+	cpt = 0
 	for G4 in DicoInfoG4["Transcript"]: # browse all G4
 		G4PerTranscript = DicoInfoG4["Transcript"][G4] # get the sub dictionary of transcript where this G4 is
 		for Transcrit in G4PerTranscript : # browse all the transcript of this G4
 			if Transcrit in DicoGTP["Transcript"] : 
 				gene = DicoGTP["Transcript"][Transcrit].keys() # get only the name of the transcript's gene
 			else:
+				cpt +=1
 				gene = [""]
 			gene = gene[0]
 			if G4 not in DicoInfoG4["Gene"] : # if the G4 is not already in the dictionary
@@ -322,8 +324,6 @@ def importInfoG4Gene(DicoGTP, DicoInfoG4):
 				# we add it after verifying if we have new informations
 				localisationGene = DicoInfoG4["Gene"][G4][gene]["Localisations"]
 				biotypeGene = DicoInfoG4["Gene"][G4][gene]["Biotype"]
-				if len(G4PerTranscript[Transcrit]["Localisations"]) > 1 or len(G4PerTranscript[Transcrit]["Biotype"]) > 1 :
-					print "PATATE"
 				localisationTranscript = G4PerTranscript[Transcrit]["Localisations"][0]
 				biotypeTranscript = G4PerTranscript[Transcrit]["Biotype"][0]
 				# 2 if because there can those two condition can be verified
@@ -331,6 +331,7 @@ def importInfoG4Gene(DicoGTP, DicoInfoG4):
 					DicoInfoG4["Gene"][G4][gene]["Localisations"].append(localisationTranscript)
 				if biotypeTranscript not in biotypeGene : 
 					DicoInfoG4["Gene"][G4][gene]["Biotype"].append(biotypeTranscript)
+	print cpt
 	return(DicoInfoG4)
 #----------------------------------------------------------------------#
 def importInfoG4(filenameG4InTranscript, DicoGTP):
