@@ -79,28 +79,29 @@ def AddInformationsOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, coupleOrtho, co
 																	   "Common Biotypes" : commonBiotypes}}}}
 	"""
 	idBBH = str(idG4Sp1+"|"+idG4Sp2)
+	
 	if idBBH not in DicoInfoBBHLevel :
 		# First time the couple of BBH is encounter
 		# so we create all information relative to it 
-		DicoInfoBBHLevel[idBBH] = {typeInfo : {}}
-		DicoInfoBBHLevel[idBBH][coupleOrtho] = {}
-		DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Localisations"] = commonLocalisations
-		DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Biotypes"] = commonBiotypes
+		DicoInfoBBHLevel[idBBH] = {"Orthology" : {}, "Homology" : {}, "No_orthology" : {}, "Paralogy" : {}}
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho] = {}
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Localisations"] = commonLocalisations
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Biotypes"] = commonBiotypes
 	elif idBBH in DicoInfoBBHLevel and coupleOrtho not in DicoInfoBBHLevel[idBBH][typeInfo] :
 		# the couple of BBH is already in the dictionary but 
 		# not the couple there homologues's levelS
-		DicoInfoBBHLevel[idBBH][coupleOrtho] = {}
-		DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Localisations"] = commonLocalisations
-		DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Biotypes"] = commonBiotypes
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho] = {}
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Localisations"] = commonLocalisations
+		DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Biotypes"] = commonBiotypes
 	elif idBBH in DicoInfoBBHLevel and coupleOrtho in DicoInfoBBHLevel[idBBH] :
 		# the couple of BBH is already in the dictionary and also the couple of homologue
 		# yet we still have a chance to get some new informations so we need to check it
-		if list(set(DicoInfoBBHLevel[idBBH]["Common Localisations"]) ^ set(commonLocalisations)) :
+		if list(set(DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Localisations"]) ^ set(commonLocalisations)) :
 			# if there is new Localisations we add them
-			DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Localisations"].append(list(set(DicoInfoBBHLevel[idBBH]["Common Localisations"]) ^ set(commonLocalisations)))
-		if list(set(DicoInfoBBHLevel[idBBH]["Common Biotypes"]) ^ set(commonBiotypes)) :
+			DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Localisations"].append(list(set(DicoInfoBBHLevel[idBBH]["Common Localisations"]) ^ set(commonLocalisations)))
+		if list(set(DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Biotypes"]) ^ set(commonBiotypes)) :
 			# if there is new Biotypes we add them
-			DicoInfoBBHLevel[idBBH][coupleOrtho]["Common Biotypes"].append(commonBiotypes)
+			DicoInfoBBHLevel[idBBH][typeInfo][coupleOrtho]["Common Biotypes"].append(commonBiotypes)
 	return(DicoInfoBBHLevel)
 #----------------------------------------------------------------------#
 def AddInfoNoOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, newList, commonLocalisations, commonBiotypes, typeInfo, level):
@@ -404,9 +405,10 @@ def GetInfoHomology(HlevelSp1, levelSp1, levelsSp2, idG4Sp1, idG4Sp2, DicoInfoG4
 				LocalisationsSp1WithH, BiotypesSp1WithH = GetLocalisationsAndBiotype(idG4Sp1, levelSp1, DicoInfoG4Sp1Level)
 				LocalisationsSp2WithH, BiotypesSp2WithH = GetLocalisationsAndBiotype(idG4Sp2, levelSp2, DicoInfoG4Sp2Level)
 				commonLocalisationsWithH, commonBiotypesWithH = GetCommonInformation(LocalisationsSp1WithH, LocalisationsSp2WithH, BiotypesSp1WithH, BiotypesSp2WithH, level)
-				coupleOrthologue = str(levelSp1+"|"+levelSp2)
-				DicoInfoBBHLevel.update(AddInformationsOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, coupleOrthologue, commonLocalisationsWithH, commonBiotypesWithH, "Orthology", level))
-				if idBBH not in DicoInfoBBHLevel[idBBH] :
+				if levelSp1 :
+					coupleOrthologue = str(levelSp1+"|"+levelSp2)
+					DicoInfoBBHLevel.update(AddInformationsOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, coupleOrthologue, commonLocalisationsWithH, commonBiotypesWithH, "Orthology", level))
+				if idBBH not in DicoInfoBBHLevel :
 					DicoInfoBBHLevel[idBBH] = {"Orthology" : {}, "Homology" : {}, "No_orthology" : {}, "Paralogy" : {}}
 				DicoInfoBBHLevel[idBBH]["Homology"].update(GetInfoParalogy(levelSp1, levelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevel[idBBH]["Homology"], DicoHomologyLevel, specie1, specie2, level))
 				
@@ -523,16 +525,28 @@ def WriteFile(DicoInfoBBH, path, level, homologyType):
 	for BBH in DicoInfoBBH[level] :
 		if homologyType in DicoInfoBBH[level][BBH] :
 			for coupleHomology in DicoInfoBBH[level][BBH][homologyType] :
-				if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"] :
-					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
-						output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+				if homologyType == "Orthology" :
+					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"] :
+						if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
+							output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+						else :
+							output.write(str(BBH)+"\t"+str(coupleHomology)+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t\n")
 					else :
-						output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t\n")
+						if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
+							output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+						else :
+							output.write(str(BBH)+"\t"+str(coupleHomology)+"\t\t\n")
 				else :
-					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
-						output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+					if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"] :
+						if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
+							output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+						else :
+							output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Localisations"])+"\t\n")
 					else :
-						output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t\t\n")
+						if DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"] :
+							output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t\t"+"|".join(DicoInfoBBH[level][BBH][homologyType][coupleHomology]["Common Biotypes"])+"\n")
+						else :
+							output.write(str(BBH)+"\t"+"|".join(list(set(coupleHomology)))+"\t\t\n")
 	output.close()
 #----------------------------------------------------------------------#
 def importData(path, specie1, specie2):
