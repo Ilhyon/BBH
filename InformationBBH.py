@@ -129,15 +129,11 @@ def AddInfoNoOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, newList, commonLocali
 	"""
 	idBBH = str(idG4Sp1+"|"+idG4Sp2)
 	newList = tuple(newList)
+	#~ print commonLocalisations, commonBiotypes
 	if idBBH not in DicoInfoBBHLevel :
 		# First time the couple of BBH is encounter
 		# so we create all information relative to it
-		DicoInfoBBHLevel[idBBH] = {typeInfo : {}}
-		DicoInfoBBHLevel[idBBH][typeInfo][newList] = {}
-		DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"] = commonLocalisations
-		DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"] = commonBiotypes
-	elif idBBH in DicoInfoBBHLevel and typeInfo not in DicoInfoBBHLevel[idBBH] : 
-		DicoInfoBBHLevel[idBBH].update({typeInfo : {}})
+		DicoInfoBBHLevel[idBBH] = {"Orthology" : {}, "Homology" : {}, "No_orthology" : {}, "Paralogy" : {}}
 		DicoInfoBBHLevel[idBBH][typeInfo][newList] = {}
 		DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"] = commonLocalisations
 		DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"] = commonBiotypes
@@ -146,19 +142,21 @@ def AddInfoNoOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, newList, commonLocali
 		# not the id that are not orthologues, this can be du to many reasons
 		# maybe there just one id in plus the list or maybe the list doesn't exist
 		keys = DicoInfoBBHLevel[idBBH][typeInfo].keys()
-		for existingList in keys :
-			if set(existingList).issubset(set(newList)) :
-				# the existingList is a subset of newList
-				newComLoca = list(set(commonLocalisations) ^ (DicoInfoBBHLevel[idBBH][typeInfo][existingList]["Common Localisations"]))
-				newComBiot = list(set(commonBiotypes) ^ (DicoInfoBBHLevel[idBBH][typeInfo][existingList]["Common Biotypes"]))
-				DicoInfoBBHLevel[idBBH][typeInfo][newList] = dictionary.pop(DicoInfoBBHLevel[idBBH][typeInfo][existingList])
-				DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"].append(newComLoca)
-				DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"].append(newComBiot)
-			else :
-				# the list of id is new
-				DicoInfoBBHLevel[idBBH][typeInfo][newList] = {}
-				DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"] = commonLocalisations
-				DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"] = commonBiotypes
+		#~ print keys
+		if keys :
+			for existingList in keys :
+				if set(existingList).issubset(set(newList)) :
+					# the existingList is a subset of newList
+					newComLoca = list(set(commonLocalisations) ^ (DicoInfoBBHLevel[idBBH][typeInfo][existingList]["Common Localisations"]))
+					newComBiot = list(set(commonBiotypes) ^ (DicoInfoBBHLevel[idBBH][typeInfo][existingList]["Common Biotypes"]))
+					DicoInfoBBHLevel[idBBH][typeInfo][newList] = dictionary.pop(DicoInfoBBHLevel[idBBH][typeInfo][existingList])
+					DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"].append(newComLoca)
+					DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"].append(newComBiot)
+		else :
+			# the list of id is new
+			DicoInfoBBHLevel[idBBH][typeInfo][newList] = {}
+			DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"] = commonLocalisations
+			DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"] = commonBiotypes
 	elif idBBH in DicoInfoBBHLevel and newList in DicoInfoBBHLevel[idBBH][typeInfo] :
 		# the couple of BBH is already in the dictionary and also the couple of homologue
 		# yet we still have a chance to get some new informations so we need to check it
@@ -167,7 +165,7 @@ def AddInfoNoOrthology(DicoInfoBBHLevel, idG4Sp1, idG4Sp2, newList, commonLocali
 			DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"].append(list(set(DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Localisations"]) ^ set(commonLocalisations)))
 		if list(set(DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"]) ^ set(commonBiotypes)) :
 			# if there is new Biotypes we add them
-			DicoInfoBBHLevel[idBBH][idNoOrthology][typeInfo][newList]["Common Biotypes"].append(list(set(DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"]) ^ set(commonBiotypes)))
+			DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"].append(list(set(DicoInfoBBHLevel[idBBH][typeInfo][newList]["Common Biotypes"]) ^ set(commonBiotypes)))
 	return(DicoInfoBBHLevel)
 #----------------------------------------------------------------------#
 def GetInfoNoOrthology(levelSp1, nonHomologueslevelSp2, idG4Sp1, idG4Sp2, DicoInfoG4Sp1Level, DicoInfoG4Sp2Level, DicoInfoBBHLevel, level):
@@ -597,7 +595,7 @@ def importData(path, specie1, specie2):
 #----------------------------------------------------------------------#
 def build_arg_parser():
 	parser = argparse.ArgumentParser(description = 'InfoBBH')
-	parser.add_argument ('-p', '--path', default = '/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/')
+	parser.add_argument ('-p', '--path', default = '/home/anais/Documents/Data/Blast/')
 	parser.add_argument ('-sp1', '--specie1', default = 'HS')
 	parser.add_argument ('-sp2', '--specie2', default = 'MM')
 	return parser
