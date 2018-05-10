@@ -175,7 +175,7 @@ def main():
 	
 	DicoBBH  = ImportBBH(path+"BBH.txt")
 	
-	#~ SearchCanoG4s(DicoBBH, DicoBBHSp1, DicoBBHSp2)
-	SearchCanoHit(DicoBBH, DicoBBHSp1, DicoBBHSp2, pathOutput)
+	SearchCanoG4s(DicoBBH, DicoBBHSp1, DicoBBHSp2)
+	#~ SearchCanoHit(DicoBBH, DicoBBHSp1, DicoBBHSp2, pathOutput)
 #----------------------------------------------------------------------#
 main()

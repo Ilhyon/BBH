@@ -9,11 +9,45 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(ggplot2)
+```
+
 # Import of Data
 
-##
+```{r}
+Data_Hit = read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/TypeG4Hit.txt', header = F, sep = "\t")
+Data_Sequence = read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/TypeG4Sequence.txt', header = F, sep = "\t")
+```
 
 ```{r}
-Data_Type= read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/test.txt', header = F, sep = "\t")
+Data_Ortho = read.csv('/home/anais/Documents/Data/Blast/Orthology_Gene_BBHrG4.txt', header = T, sep = "\t")
+Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBHrG4.txt', header = T, sep = "\t")
+```
+
+# Analyse
+
+pie cool : https://stackoverflow.com/questions/41338757/adding-percentage-labels-on-pie-chart-in-r
+
+```{r}
+pie(table(Data_Ortho$Localisations))
+pie(table(Data_No_Ortho$Localisations))
+
+pie(table(Data_Ortho$Biotypes))
+pie(table(Data_No_Ortho$Biotypes))
+```
+
+```{r}
+data.frame(table(Data_Ortho$Localisations))
+bp<- ggplot(data.frame(table(Data_Ortho$Localisations)), aes(x="", y=Freq, fill=Var1))+
+geom_bar(width = 1, stat = "identity")
+bp
+pie <- bp + coord_polar("y", start=0)
+pie + geom_text(aes(y = Freq/3 + c(0, cumsum(Freq)[-length(Freq)]), label = percent(Freq/100)), size=5)
+```
+
+```{r}
+pie(table(Data_Hit$V1))
+pie(table(Data_Sequence$V1))
 ```
 
