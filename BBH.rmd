@@ -1,0 +1,19 @@
+---
+title: "BBH"
+author: "Anaïs Vannutelli"
+date: "May 10, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Import of Data
+
+##
+
+```{r}
+Data_Type= read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/test.txt', header = F, sep = "\t")
+```
+
