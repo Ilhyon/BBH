@@ -3,6 +3,8 @@ title: "BBH"
 author: "Anaïs Vannutelli"
 date: "May 10, 2018"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+#install.packages('dplyr')
+#install.packages('ggrepel')
+#install.packages('forcats')
+library(dplyr)
 library(ggplot2)
+library(ggrepel)
+library(forcats)
+library(scales)
 ```
 
 # Import of Data
@@ -22,7 +31,7 @@ Data_Sequence = read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home
 
 ```{r}
 Data_Ortho = read.csv('/home/anais/Documents/Data/Blast/Orthology_Gene_BBHrG4.txt', header = T, sep = "\t")
-Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBHrG4.txt', header = T, sep = "\t")
+Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBHrG4.txt', header = T, sep="\t")
 ```
 
 # Analyse
@@ -30,24 +39,57 @@ Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBH
 pie cool : https://stackoverflow.com/questions/41338757/adding-percentage-labels-on-pie-chart-in-r
 
 ```{r}
-pie(table(Data_Ortho$Localisations))
-pie(table(Data_No_Ortho$Localisations))
+data = data.frame(table(Data_No_Ortho$Localisations))
+write.csv(data, file = "No_ortho_Loca.csv", row.names=FALSE)
 
-pie(table(Data_Ortho$Biotypes))
-pie(table(Data_No_Ortho$Biotypes))
+data = data.frame(table(Data_Sequence$V1))
+write.csv(data, file = "SequenceType.csv", row.names=FALSE)
+
+data = data.frame(table(Data_Sequence$V2))
+write.csv(data, file = "Sequence.csv", row.names=FALSE)
+
+
+datacount = which(data$Freq < 60)
+datacount = data[datacount,]
+autre = sum(datacount$Freq)
+test = which(data$Freq >= 60)
+test = data[test,]
+write.csv(test, file = "NoOrthoBio_autre.csv", row.names=FALSE)
 ```
 
 ```{r}
-data.frame(table(Data_Ortho$Localisations))
-bp<- ggplot(data.frame(table(Data_Ortho$Localisations)), aes(x="", y=Freq, fill=Var1))+
-geom_bar(width = 1, stat = "identity")
-bp
-pie <- bp + coord_polar("y", start=0)
-pie + geom_text(aes(y = Freq/3 + c(0, cumsum(Freq)[-length(Freq)]), label = percent(Freq/100)), size=5)
+histoSp1 = which(Data_Hit$V2 < 100)
+histoSp1 = Data_Hit[histoSp1,]
+histoSp2 = which(Data_Hit$V3 < 100)
+histoSp2 = Data_Hit[histoSp2,]
+
+bartable = table(histoSp2$V2, histoSp2$V3)  ## get the cross tab
+barplot(bartable, beside = TRUE)  ## plot 
+
+par(mfrow=c(1,2))
+boxplot(histoSp2$V2, histoSp2$V3, main="Matches de la souris avec nG < 30", names = c("Humain", "Souris"))
+boxplot(histoSp1$V2, histoSp1$V3, main="Matches de l'humain avec nG < 30", names = c("Humain", "Souris"))
+
+par(mfrow=c(2,2))
+hist(histoSp1$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb H < 100)", xlab = "nb of G")
+hist(histoSp1$V3, col = "darkred", main="Nombre de G dans les matches souris (nb H < 100)", xlab = "nb of G")
+hist(histoSp2$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb M < 100)", xlab = "nb of G")
+hist(histoSp2$V3, col = "darkred", main="Nombre de G dans les matches souris (nb M < 100)", xlab = "nb of G")
 ```
 
 ```{r}
-pie(table(Data_Hit$V1))
-pie(table(Data_Sequence$V1))
+data = data.frame(table(Data_Ortho$Localisations))
+
+pie <- ggplot(data, aes(x = "", y = Freq, fill = fct_inorder(Var1))) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start = 0) +
+       geom_label_repel(aes(label = Freq), size=5, show.legend = F, nudge_x = 1) +
+       guides(fill = guide_legend(title = "Group"))
+pie
+
+pie(data$Freq, labels = paste(round(prop.table(data$Freq)*100), "%", sep = ""), 
+col = rainbow(nrow(data)), main = "Common localisation")
+legend("bottomleft", legend = data$Var1, cex = 0.8,
+   fill = rainbow(nrow(data)))
 ```
 
