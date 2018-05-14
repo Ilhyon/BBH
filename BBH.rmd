@@ -25,8 +25,8 @@ library(scales)
 # Import of Data
 
 ```{r}
-Data_Hit = read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/TypeG4Hit.txt', header = F, sep = "\t")
-Data_Sequence = read.csv('/media/anais/08c4bb0b-43b3-4183-88a4-9ca53d7ce1e8/home/anais/Documents/Data/Blast/TypeG4Sequence.txt', header = F, sep = "\t")
+Data_Hit = read.csv('/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/TypeG4Hit.txt', header = F, sep = "\t")
+Data_Sequence = read.csv('/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/TypeG4Sequence.txt', header = F, sep = "\t")
 ```
 
 ```{r}
@@ -73,6 +73,26 @@ boxplot(histoSp1$V2, histoSp1$V3, main="Matches de l'humain avec nG < 30", names
 par(mfrow=c(2,2))
 hist(histoSp1$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb H < 100)", xlab = "nb of G")
 hist(histoSp1$V3, col = "darkred", main="Nombre de G dans les matches souris (nb H < 100)", xlab = "nb of G")
+hist(histoSp2$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb M < 100)", xlab = "nb of G")
+hist(histoSp2$V3, col = "darkred", main="Nombre de G dans les matches souris (nb M < 100)", xlab = "nb of G")
+```
+
+```{r}
+histoSp1 = which(Data_Hit$V1 == "non_anonical")
+histoSp1 = Data_Hit[histoSp1,]
+tmp = which(histoSp1$V2 < 30)
+histoSp1 = histoSp1[tmp,]
+
+bartable = table(histoSp1$V2, histoSp1$V3)  ## get the cross tab
+barplot(bartable, beside = TRUE)  ## plot 
+
+par(mfrow=c(1,2))
+boxplot(histoSp2$V2, histoSp2$V3, main="Matches de la souris avec nG < 30", names = c("Humain", "Souris"))
+boxplot(histoSp1$V2, histoSp1$V3, main="Matches de l'humain avec nG < 30", names = c("Humain", "Souris"))
+
+par(mfrow=c(1,2))
+hist(histoSp1$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb H < 30) uniquement pour les hit non canonique", xlab = "nb of G")
+hist(histoSp1$V3, col = "darkred", main="Nombre de G dans les matches souris (nb H < 30) uniquement pour les hit non canonique", xlab = "nb of G")
 hist(histoSp2$V2, col = "darkblue", main="Nombre de G dans les matches humain (nb M < 100)", xlab = "nb of G")
 hist(histoSp2$V3, col = "darkred", main="Nombre de G dans les matches souris (nb M < 100)", xlab = "nb of G")
 ```
