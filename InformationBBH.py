@@ -517,6 +517,13 @@ def GetDicoInfo(DicoBBH, DicoHomology, DicoInfoG4Sp1, DicoInfoG4Sp2, DicoInfoBBH
 	return(DicoInfoBBHLevel)
 #----------------------------------------------------------------------#
 def WriteFile(DicoInfoBBH, path, level, homologyType):
+	""" 
+		Parameters
+	    ----------
+	    
+	    Returns
+	    -------
+	"""
 	output = open(path+str(homologyType)+'_'+level+'_BBHrG4.txt',"w") # file opening for reading
 	output.write("BBH\tcouple Homologue\tLocalisations\tBiotypes\n")
 	for BBH in DicoInfoBBH[level] :
@@ -593,6 +600,13 @@ def importData(path, specie1, specie2):
 	return(DicoBBH, DicoHomology, DicoInfoG4Specie1, DicoInfoG4Specie2)
 #----------------------------------------------------------------------#
 def build_arg_parser():
+	""" 
+		Parameters
+	    ----------
+	    
+	    Returns
+	    -------
+	"""
 	parser = argparse.ArgumentParser(description = 'InfoBBH')
 	parser.add_argument ('-p', '--path', default = '/home/anais/Documents/Data/Blast/')
 	parser.add_argument ('-sp1', '--specie1', default = 'HS')
@@ -600,6 +614,13 @@ def build_arg_parser():
 	return parser
 #----------------------------------------------------------------------#
 def main():
+	""" 
+		Parameters
+	    ----------
+	    
+	    Returns
+	    -------
+	"""
 	parser = build_arg_parser()
 	arg = parser.parse_args()
 	path=arg.path	# directory which contain all the file with BBH and rG4s

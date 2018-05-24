@@ -13,7 +13,7 @@ def ImportBBH(filename):
 	     of both specie as BBH
 	    Returns
 	    -------
-	     DicoBBH : keys (string) -> rG4s from specie 1; value (string) -> rG4s from specie 2
+	     DicoBBH : {idG4Sp1 : idG4Sp2}
 	"""
 	DicoBBH = {}
 	with open(filename) as f: # file opening
@@ -27,13 +27,17 @@ def ImportBBH(filename):
 	return(DicoBBH)
 #----------------------------------------------------------------------#
 def ProteinToTranscript(elem, DicoGTP):
-	""" 
+	""" This function allow us to find if eleme is an id protein and to 
+		return the id transcript of this id protein
 		Parameters
 	    ----------
-	    
+	    elem : string, correspond to the element we want to find out if
+				it's a portein id or a transcript id
+	    DicoGTP :	{"Transcript" : {idTranscript : {idGene : idProtein}}
+					 "Protein" : {idProtein : idTranscript}}
 	    Returns
 	    -------
-	    
+	    transcriptID : transcript id of the element
 	"""
 	
 	if re.search("SP", elem): # the element 1 is a protein
@@ -100,11 +104,28 @@ def ImportIDGeneTranscriptProteins(filename):
 	return(DicoGeneTranscriptProtein)
 #----------------------------------------------------------------------#
 def MajOrthology(GeneSp1, TranscriptSp1, GeneSp2, TranscriptSp2, DicoHomology):
-	"""
+	""" When reading the file of orthology of the specie 2 we add new informations
+		if their are some
 		Parameters
 	    ----------
+	    GeneSp1 : string, gene id from the specie 1
+	    TranscriptSp1 : string, transcript id from the specie 1
+	    GeneSp2 : string, gene id from the specie 2
+	    TranscriptSp2 : string, transcript id from the specie 2
+	    DicoHomology : {"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	    Returns
 	    -------
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	"""
 	
 	# we start with the gene level
@@ -158,11 +179,29 @@ def AddGeneHomology(elem1, elem2, DicoHomologyLevel, homologyType):
 	return(DicoHomologyLevel)
 #----------------------------------------------------------------------#
 def ImportOrthology1(filename, DicoGTPSp1, DicoGTPSp2, DicoHomology):
-	""" 
+	""" Import into a dictionnary, the orthology links between the genes 
+		and transcript from the specie 1 vs the specie 2
 		Parameters
 	    ----------
+	    filename : string, name of the file containg the information of orthology of the Specie 1 vs the Specie 2
+	    DicoGTPSp1 : DicoGTP : {"Transcript" : {idTranscript : {idGene : idProtein}}
+								"Protein" : {idProtein : idTranscript}}
+	    DicoGTPSp2 : DicoGTP : {"Transcript" : {idTranscript : {idGene : idProtein}}
+								"Protein" : {idProtein : idTranscript}}
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	    Returns
 	    -------
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	"""
 	homologyType = "Orthology"
 	
@@ -186,11 +225,29 @@ def ImportOrthology1(filename, DicoGTPSp1, DicoGTPSp2, DicoHomology):
 	return(DicoHomology)
 #----------------------------------------------------------------------#
 def ImportOrthology2(filename, DicoGTPSp1, DicoGTPSp2, DicoHomology):
-	""" 
+	""" Import into a dictionnary, the orthology links between the genes 
+		and transcript from the specie 2 vs the specie 1
 		Parameters
 	    ----------
+	    filename : string, name of the file containg the information of orthology of the Specie 2 vs the Specie 1
+	    DicoGTPSp1 : {"Transcript" : {idTranscript : {idGene : idProtein}}
+					  "Protein" : {idProtein : idTranscript}}
+	    DicoGTPSp2 : {"Transcript" : {idTranscript : {idGene : idProtein}}
+					  "Protein" : {idProtein : idTranscript}}
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	    Returns
 	    -------
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	"""
 	homologyType = "Orthology"
 	
@@ -212,22 +269,33 @@ def ImportOrthology2(filename, DicoGTPSp1, DicoGTPSp2, DicoHomology):
 				DicoHomology.update(MajOrthology(GeneSp1, TranscriptSp1, GeneSp2, TranscriptSp2, DicoHomology))
 	return(DicoHomology)
 #----------------------------------------------------------------------#
-def ImportParalogy(filename, DicoGTP, specie1, DicoHomology):
+def ImportParalogy(filename, DicoGTP, specie, DicoHomology):
 	""" Create two dictonary that contain Homologie between the two specie,
-	one with the homology between genes of the two specie and the other one
-	between the transcripts of the two specie
-	Parameters
+		one with the homology between genes of the two specie and the other one
+		between the transcripts of the two specie
+		Parameters
 	    ----------
-	     filename : string, name of the file containing all the gene and transcript
-	     that are homologue between two specie
+	    filename : string, name of the file containing all the gene and transcript
+	    that are homologue between two specie
+	    DicoGTP : {"Transcript" : {idTranscript : {idGene : idProtein}}
+				   "Protein" : {idProtein : idTranscript}}
+	    specie : string, name of the specie (HS or MM for exemple)
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	    Returns
 	    -------
-	     DicoHomology : {"Gene": {"Paralogues" : {idGeneSpecie1 : [idGeneSpecie1]}
-								  "Orthologues" : {idGeneSpecie1 : [idGeneSpecie2]}}
-						"Transcript" : {"Paralogues" : {idTranscririptSpecie1 : [idTranscriptSpecie1]}
-										"Orthologues" : {idTranscririptSpecie1 : [idTranscriptSpecie2]}}
+	    DicoHomology :	{"Gene" : {"Orthology" : {idGeneSp1 : [idGeneSp2]}
+								   "Paralogie Sp1" : {idGeneSp1 : [idGeneSp1]}
+								   "Paralogie Sp2" : {idGeneSp2 : [idGeneSp2]}}
+						 "Transcript" : {"Orthology" : {idTranscriptSp1 : [idTranscriptSp2]}
+										 "Paralogie Sp1" : {idTranscriptSp1 : [idTranscriptSp1]}
+										 "Paralogie Sp2" : {idTranscriptSp2 : [idTranscriptSp2]}}}
 	"""
-	paralogy = "Paralogy " + str(specie1)
+	paralogy = "Paralogy " + str(specie)
 	
 	with open(filename) as f: # file opening
 		content = f.read()
@@ -253,11 +321,12 @@ def importInfoG4Transcript(filenameG4InTranscript, DicoInfoG4):
 		transcript level
 	Parameters
 	    ----------
-	     filenameG4InTranscript : string, name of the file containing all 
-	     the G4 In Transcript with their localisations and biotype (transcript level)
+	    filenameG4InTranscript : string, name of the file containing all 
+	    the G4 In Transcript with their localisations and biotype (transcript level)
+	    DicoInfoG4 : {"Gene": {}, "Transcript" : {}}
 	    Returns
 	    -------
-	     DicoInfoG4["Transcript"] :	{idG4 : {idTranscript : {"Localisation" : [localisation]
+	    DicoInfoG4["Transcript"] :	{idG4 : {idTranscript : {"Localisation" : [localisation]
 															 "Biotype" : [Biotype]}}}
 	"""
 	# from the file G4InTranscript we will extract the data of transcript : localisation and biotype
@@ -290,12 +359,13 @@ def importInfoG4Gene(DicoGTP, DicoInfoG4):
 		gene level
 	Parameters
 	    ----------
-	     DicoGTP : {"Transcript" : {idTranscript : {idGene : idProtein}}
-									  "Protein" : {idProtein : idTranscript}}
+	    DicoGTP : {"Transcript" : {idTranscript : {idGene : idProtein}}
+				   "Protein" : {idProtein : idTranscript}}
+		DicoInfoG4 : {"Gene": {}, "Transcript" : {}}
 	    Returns
 	    -------
-	     DicoInfoG4 : {idG4 : {idGene : {"Localisation" : [localisation]
-										 "Biotype" : [Biotype]}}}
+	    DicoInfoG4 : {idG4 : {idGene : {"Localisation" : [localisation]
+										"Biotype" : [Biotype]}}}
 	"""
 	# with the new informations and the dicoGTP we can get the missing ones :
 	# for genes level the localisation and biotypes
@@ -336,12 +406,12 @@ def importInfoG4(filenameG4InTranscript, DicoGTP):
 	""" Create a dictonary for each G4 with his localisation
 	Parameters
 	    ----------
-	     filenameG4InTranscript : string, name of the file containing all 
-	     the G4 In Transcript with their localisations and biotype (transcript level)
-	     DicoGTP : keys (string) -> rG4s from specie 1; value (string) -> rG4s from specie 2
+	    filenameG4InTranscript : string, name of the file containing all 
+	    the G4 In Transcript with their localisations and biotype (transcript level)
+	    DicoGTP : keys (string) -> rG4s from specie 1; value (string) -> rG4s from specie 2
 	    Returns
 	    -------
-	     DicoInfoG4 :	{"Transcript" : {idG4 : {idTranscript : {"Localisation" : [localisation]
+	    DicoInfoG4 :	{"Transcript" : {idG4 : {idTranscript : {"Localisation" : [localisation]
 																"Biotype" : [Biotype]}}}
 						 "Gene" : {idG4 : {idGene : {"Localisation" : [localisation]
 																"Biotype" : [Biotype]}}}

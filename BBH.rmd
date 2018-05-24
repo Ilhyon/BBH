@@ -30,8 +30,8 @@ Data_Sequence = read.csv('/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/Ty
 ```
 
 ```{r}
-Data_Ortho = read.csv('/home/anais/Documents/Data/Blast/Orthology_Gene_BBHrG4.txt', header = T, sep = "\t")
-Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBHrG4.txt', header = T, sep="\t")
+Data_Ortho = read.csv('/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/Orthology_Transcript_BBHrG4.txt', header = T, sep = "\t")
+Data_No_Ortho = read.csv('/home/local/USHERBROOKE/vana2406/Documents/Data/BBH/No_orthology_Transcript_BBHrG4.txt', header = T, sep="\t")
 ```
 
 # Analyse
@@ -39,8 +39,8 @@ Data_No_Ortho = read.csv('/home/anais/Documents/Data/Blast/No_orthology_Gene_BBH
 pie cool : https://stackoverflow.com/questions/41338757/adding-percentage-labels-on-pie-chart-in-r
 
 ```{r}
-data = data.frame(table(Data_No_Ortho$Localisations))
-write.csv(data, file = "No_ortho_Loca.csv", row.names=FALSE)
+data = data.frame(table(Data_No_Ortho$Biotypes))
+write.csv(data, file = "No_ortho_Bt.csv", row.names=FALSE)
 
 data = data.frame(table(Data_Sequence$V1))
 write.csv(data, file = "SequenceType.csv", row.names=FALSE)
